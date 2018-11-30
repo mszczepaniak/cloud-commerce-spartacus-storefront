@@ -1,39 +1,47 @@
 import { HttpClient } from '@angular/common/http';
 import { ServerConfig } from '../../config/server-config/server-config';
 import { Injectable } from '@angular/core';
-import { RoutesConfig } from './routes-config';
+import { RoutingLanguagesTranslations } from './routes-config';
 import { deepMerge } from '../../config/utils/deep-merge';
-import { ConfigurableRoutesConfig } from './config/configurable-routes-config';
+import { RoutingTranslationConfig } from './config/routing-translation-config';
 import { retry } from 'rxjs/operators';
 
-const ENDPOINT_ROUTES_CONFIG = 'routes-config';
+const ENDPOINT_ROUTING_TRANSLATION = 'routing-translation';
 
 @Injectable()
 export class RoutesConfigLoader {
-  private _routesConfig: RoutesConfig;
+  private _languagesTranslations: RoutingLanguagesTranslations;
 
-  get routesConfig(): RoutesConfig {
-    return this._routesConfig;
+  get translations(): RoutingLanguagesTranslations {
+    return this._languagesTranslations;
   }
 
   get endpoint(): string {
     return (
-      (this.serverConfig.server.baseUrl || '') + '/' + ENDPOINT_ROUTES_CONFIG
+      (this.serverConfig.server.baseUrl || '') +
+      '/' +
+      ENDPOINT_ROUTING_TRANSLATION
     );
+  }
+
+  private get staticTranslations(): RoutingLanguagesTranslations {
+    return this.routingTranslationConfig.routingTranslation.translations;
   }
 
   constructor(
     private readonly http: HttpClient,
     private readonly serverConfig: ServerConfig,
-    private readonly configurableRoutesConfig: ConfigurableRoutesConfig
+    private readonly routingTranslationConfig: RoutingTranslationConfig
   ) {}
 
   async load(): Promise<any> {
-    const shouldFetch = this.configurableRoutesConfig.routesConfig.fetch;
-    const fetchedRoutesConfig = shouldFetch
+    const shouldFetch = this.routingTranslationConfig.routingTranslation.fetch;
+    const fetchedRoutingLanguagesTranslations = shouldFetch
       ? await this.fetch(this.endpoint)
       : null;
-    this._routesConfig = this.extendStaticWith(fetchedRoutesConfig);
+    this._languagesTranslations = this.extendStaticWith(
+      fetchedRoutingLanguagesTranslations
+    );
   }
 
   private fetch(url: string): Promise<any> {
@@ -46,29 +54,31 @@ export class RoutesConfigLoader {
       });
   }
 
-  private extendStaticWith(routesConfig: RoutesConfig): RoutesConfig {
-    const mergedRoutesConfig = deepMerge(
+  private extendStaticWith(
+    routingLanguagesTranslations: RoutingLanguagesTranslations
+  ): RoutingLanguagesTranslations {
+    const mergedRoutingLanguagesTranslation = deepMerge(
       {},
-      this.configurableRoutesConfig.routesConfig,
-      routesConfig
+      this.staticTranslations,
+      routingLanguagesTranslations
     );
-    return this.extendLanguagesTranslationsWithDefault(mergedRoutesConfig);
+    return this.extendLanguagesWithDefault(mergedRoutingLanguagesTranslation);
   }
 
-  private extendLanguagesTranslationsWithDefault(
-    routesConfig: RoutesConfig
-  ): RoutesConfig {
-    const defaultTranslations = routesConfig.translations.default;
+  private extendLanguagesWithDefault(
+    languagesTranslations: RoutingLanguagesTranslations
+  ): RoutingLanguagesTranslations {
+    const defaultTranslations = languagesTranslations.default;
 
-    Object.keys(routesConfig.translations).forEach(languageCode => {
-      const languageTranslations = routesConfig.translations[languageCode];
-      routesConfig.translations[languageCode] = deepMerge(
+    Object.keys(languagesTranslations).forEach(languageCode => {
+      const languageTranslations = languagesTranslations[languageCode];
+      languagesTranslations[languageCode] = deepMerge(
         {},
         defaultTranslations,
         languageTranslations
       );
     });
 
-    return routesConfig;
+    return languagesTranslations;
   }
 }

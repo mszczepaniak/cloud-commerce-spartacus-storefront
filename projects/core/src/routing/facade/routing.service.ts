@@ -3,7 +3,7 @@ import * as fromStore from '../store';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { NavigationExtras } from '@angular/router';
-import { PathPipeService } from '../configurable-routes/path/path-pipe.service';
+import { PathPipeService } from '../routing-translation/path/path-pipe.service';
 
 @Injectable({
   providedIn: 'root'

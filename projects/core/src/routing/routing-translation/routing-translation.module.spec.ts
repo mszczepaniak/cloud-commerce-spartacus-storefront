@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ConfigurableRoutesModule } from './configurable-routes.module';
+import { ConfigurableRoutesModule } from './routing-translation.module';
 import { RoutesConfigLoader } from './routes-config-loader';
 import { APP_INITIALIZER } from '@angular/core';
 

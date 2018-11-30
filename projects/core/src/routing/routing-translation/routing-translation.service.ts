@@ -3,9 +3,9 @@ import { Routes, Router, Route } from '@angular/router';
 import { ServerConfig } from '../../config/server-config/server-config';
 import { RoutesConfigLoader } from './routes-config-loader';
 import {
-  RoutesConfig,
   RoutesTranslations,
-  RouteTranslation
+  RouteTranslation,
+  RoutingLanguagesTranslations
 } from './routes-config';
 
 type ConfigurableRouteKey = 'cxPath' | 'cxRedirectTo';
@@ -20,25 +20,23 @@ export class ConfigurableRoutesService {
 
   private readonly DEFAULT_LANGUAGE_CODE = 'default';
 
-  private _routesConfig: RoutesConfig;
+  private _translations: RoutingLanguagesTranslations;
   private currentLanguageCode: string = this.DEFAULT_LANGUAGE_CODE;
 
   private get currentRoutesTranslations(): RoutesTranslations {
-    return this._routesConfig.translations[
-      this.currentLanguageCode
-    ] as RoutesTranslations;
+    return this._translations[this.currentLanguageCode] as RoutesTranslations;
   }
 
   init() {
-    this._routesConfig = this.loader.routesConfig;
+    this._translations = this.loader.translations;
   }
 
   changeLanguage(languageCode: string) {
-    if (this._routesConfig.translations[languageCode] === undefined) {
+    if (this._translations.translations[languageCode] === undefined) {
       this.warn(
         `There are no translations in routes config for language code '${languageCode}'.`,
         `The default routes translations will be used instead: `,
-        this._routesConfig.translations.default
+        this._translations.default
       );
       this.currentLanguageCode = this.DEFAULT_LANGUAGE_CODE;
     } else {

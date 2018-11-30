@@ -25,7 +25,7 @@ import { RoutingService } from './facade/routing.service';
 
 import { ROUTING_FEATURE } from './state';
 import { defaultConfig } from './config/default-config';
-import { ConfigurableRoutesModule } from './configurable-routes/configurable-routes.module';
+import { ConfigurableRoutesModule } from './routing-translation/routing-translation.module';
 
 export function getMetaReducers(
   config: RoutingModuleConfig

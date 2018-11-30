@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ServerConfig } from '../../config/server-config/server-config';
 import { RoutesConfigLoader } from './routes-config-loader';
-import { ConfigurableRoutesService } from './configurable-routes.service';
+import { ConfigurableRoutesService } from './routing-translation.service';
 import { Router, Routes } from '@angular/router';
 import { RoutesConfig } from './routes-config';
 
@@ -50,7 +50,7 @@ describe('ConfigurableRoutesService', () => {
 
   describe('init', () => {
     it('should get routes config from loader', () => {
-      expect(service['_routesConfig']).toEqual(
+      expect(service['_translations']).toEqual(
         mockRoutesConfigLoader.routesConfig
       );
     });
@@ -84,7 +84,7 @@ describe('ConfigurableRoutesService', () => {
         { path: null, data: { cxPath: 'page1' } },
         { path: null, data: { cxPath: 'page2' } }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: { paths: ['path1'] },
           page2: { paths: ['path2'] }
@@ -100,7 +100,7 @@ describe('ConfigurableRoutesService', () => {
         { path: 'path1', data: { cxRedirectTo: 'page1' } },
         { path: 'path2', data: { cxRedirectTo: 'page2' } }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: { paths: ['path100'] },
           page2: { paths: ['path200'] }
@@ -119,7 +119,7 @@ describe('ConfigurableRoutesService', () => {
         { path: null, data: { cxPath: 'page1' } },
         { path: null, data: { cxPath: 'page2' } }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         default: {
           page1: { paths: ['path1'] },
           page2: { paths: ['path2'] }
@@ -136,7 +136,7 @@ describe('ConfigurableRoutesService', () => {
         { path: 'path1', data: { cxRedirectTo: 'page1' } },
         { path: 'path2', data: { cxRedirectTo: 'page2' } }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         default: {
           page1: { paths: ['path100'] },
           page2: { paths: ['path200'] }
@@ -169,7 +169,7 @@ describe('ConfigurableRoutesService', () => {
       router.config = [
         { path: null, data: { cxPath: 'page1', cxRedirectTo: 'page2' } }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: { paths: ['path1'] },
           page2: { paths: ['path2'] }
@@ -184,7 +184,7 @@ describe('ConfigurableRoutesService', () => {
       router.config = [
         { path: null, data: { cxPath: 'page1', cxRedirectTo: 'page2' } }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: { paths: ['path1'] },
           page2: { paths: ['path2'] }
@@ -196,7 +196,7 @@ describe('ConfigurableRoutesService', () => {
 
     it('should generate many routes with different paths when translations config contain many paths for a given page', () => {
       router.config = [{ path: null, data: { cxPath: 'page1' } }];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: { paths: ['path1', 'path100'] }
         }
@@ -211,7 +211,7 @@ describe('ConfigurableRoutesService', () => {
       router.config = [
         { path: 'path', redirectTo: null, data: { cxRedirectTo: 'page1' } }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: { paths: ['path1', 'path100'] }
         }
@@ -223,7 +223,7 @@ describe('ConfigurableRoutesService', () => {
 
     it('should not generate routes if they do not have configured paths in translations config', () => {
       router.config = [{ path: null, data: { cxPath: 'page1' } }];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: null
         }
@@ -236,7 +236,7 @@ describe('ConfigurableRoutesService', () => {
       spyOn(console, 'warn');
       serverConfig.production = false;
       router.config = [{ path: null, data: { cxPath: 'page1' } }];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {}
       };
       service.changeLanguage('testLanguage');
@@ -247,7 +247,7 @@ describe('ConfigurableRoutesService', () => {
       spyOn(console, 'warn');
       serverConfig.production = true;
       router.config = [{ path: null, data: { cxPath: 'page1' } }];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {}
       };
       service.changeLanguage('testLanguage');
@@ -271,7 +271,7 @@ describe('ConfigurableRoutesService', () => {
         // normal routes
         { path: 'path5' }
       ];
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page2: { paths: ['path2', 'path20', 'path200'] },
           page4: { paths: ['path40', 'path400'] }
@@ -306,7 +306,7 @@ describe('ConfigurableRoutesService', () => {
 
   describe('getNestedRoutesTranslations', () => {
     it('should return configured paths translations for given page name', () => {
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: { paths: ['path1', 'path10'] }
         }
@@ -321,7 +321,7 @@ describe('ConfigurableRoutesService', () => {
     it('should console.warn in non-production environment if given page name does not exist in translations config', () => {
       spyOn(console, 'warn');
       serverConfig.production = false;
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {}
       };
       service.changeLanguage('testLanguage');
@@ -332,7 +332,7 @@ describe('ConfigurableRoutesService', () => {
     it('should NOT console.warn in non-production environment if given page name has "null" in translations config', () => {
       spyOn(console, 'warn');
       serverConfig.production = false;
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {
           page1: null
         }
@@ -345,7 +345,7 @@ describe('ConfigurableRoutesService', () => {
     it('should NOT console.warn in production environment if given page name does not exist in translations config', () => {
       spyOn(console, 'warn');
       serverConfig.production = true;
-      service['_routesConfig'].translations = {
+      service['_translations'].translations = {
         testLanguage: {}
       };
       service.changeLanguage('testLanguage');

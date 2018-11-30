@@ -43,7 +43,7 @@ describe('DynamicUrlRecognizerService', () => {
         nestedRoutesParams: object[];
       };
     }) {
-      loader.routesConfig.translations.default = defaultTranslations;
+      loader.translations.default = defaultTranslations;
       expect(service.getNestedRoutes(url)).toEqual(expectedResult);
     }
 

@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { ConfigurableRoutesService } from './configurable-routes.service';
+import { ConfigurableRoutesService } from './routing-translation.service';
 import { RoutesConfigLoader } from './routes-config-loader';
 import { ConfigModule, Config } from '../../config/config.module';
 import { PathPipeService } from './path/path-pipe.service';
 import { DynamicUrlPipeService } from './path/dynamic-url-pipe.service';
-import { ConfigurableRoutesConfig } from './config/configurable-routes-config';
-import { defaultConfigurableRoutesConfig } from './config/default-configurable-routes-config';
+import { RoutingTranslationConfig } from './config/routing-translation-config';
+import { defaultRoutingTranslationConfig } from './config/default-routing-translation-config';
 import { DynamicUrlRecognizerService } from './path/dynamic-url-recognizer.service';
 import { UrlParser } from './path/url-parser.service';
 
@@ -18,7 +18,7 @@ export function loadRoutesConfig(loader: RoutesConfigLoader) {
 @NgModule({
   imports: [
     CommonModule,
-    ConfigModule.withConfig(defaultConfigurableRoutesConfig)
+    ConfigModule.withConfig(defaultRoutingTranslationConfig)
   ],
   declarations: [],
   exports: [],
@@ -35,7 +35,7 @@ export function loadRoutesConfig(loader: RoutesConfigLoader) {
       deps: [RoutesConfigLoader],
       multi: true
     },
-    { provide: ConfigurableRoutesConfig, useExisting: Config }
+    { provide: RoutingTranslationConfig, useExisting: Config }
   ]
 })
 export class ConfigurableRoutesModule {}

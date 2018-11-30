@@ -109,7 +109,6 @@ export class DynamicUrlRecognizerService {
   }
 
   private get defaultRoutesTranslations(): RoutesTranslations {
-    return this.routesConfigLoader.routesConfig.translations
-      .default as RoutesTranslations;
+    return this.routesConfigLoader.translations.default as RoutesTranslations;
   }
 }
