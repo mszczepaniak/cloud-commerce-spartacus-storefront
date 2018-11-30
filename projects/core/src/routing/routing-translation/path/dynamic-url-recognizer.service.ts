@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RoutesConfigLoader } from '../routes-config-loader';
+import { RoutingTranslationLoader } from '../routing-translation-loader';
 import { UrlParser } from './url-parser.service';
 import { RoutesTranslations } from '../routes-config';
 import { removeLeadingSlash, isParam, getParamName } from './path-utils';
@@ -7,7 +7,7 @@ import { removeLeadingSlash, isParam, getParamName } from './path-utils';
 @Injectable()
 export class DynamicUrlRecognizerService {
   constructor(
-    private routesConfigLoader: RoutesConfigLoader,
+    private routesConfigLoader: RoutingTranslationLoader,
     private urlParser: UrlParser
   ) {}
 

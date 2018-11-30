@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ServerConfig } from '../../config/server-config/server-config';
-import { RoutesConfigLoader } from './routes-config-loader';
+import { RoutingTranslationLoader } from './routing-translation-loader';
 import { ConfigurableRoutesService } from './routing-translation.service';
 import { Router, Routes } from '@angular/router';
 import { RoutesConfig } from './routes-config';
@@ -30,7 +30,7 @@ describe('ConfigurableRoutesService', () => {
       providers: [
         ConfigurableRoutesService,
         {
-          provide: RoutesConfigLoader,
+          provide: RoutingTranslationLoader,
           useValue: mockRoutesConfigLoader
         },
         { provide: ServerConfig, useValue: mockServerConfig },

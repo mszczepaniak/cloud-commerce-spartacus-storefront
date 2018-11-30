@@ -2,16 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
 import { ServerConfig } from '../../config';
 import { RoutingTranslationConfig } from './config/routing-translation-config';
-import { RoutesConfigLoader } from './routes-config-loader';
+import { RoutingTranslationLoader } from './routing-translation-loader';
 import { BehaviorSubject, of } from 'rxjs';
-import { RoutesConfig } from './routes-config';
+import { RoutingLanguagesTranslations } from './routes-config';
 
 const mockHttpClient = {
   get: () => new BehaviorSubject(null)
 };
 const mockServerConfig: ServerConfig = { server: { baseUrl: 'test-base-url' } };
 const mockConfigurableRoutesModuleConfig: RoutingTranslationConfig = {
-  routesConfig: {
+  routingTranslation: {
     translations: {
       default: {
         page1: {
@@ -28,31 +28,29 @@ const mockConfigurableRoutesModuleConfig: RoutingTranslationConfig = {
     }
   }
 };
-const mockFetchedRoutesConfig: RoutesConfig = {
-  translations: {
-    default: {
-      page1: {
-        paths: ['fetched-default-path1'],
-        paramsMapping: { param1: 'fetched-mappedParam1' }
-      }
-    },
-    en: {
-      page1: {
-        paths: ['fetched-en-path1', 'fetched-en-path10']
-      }
+const mockFetchedLanguagesTranslations: RoutingLanguagesTranslations = {
+  default: {
+    page1: {
+      paths: ['fetched-default-path1'],
+      paramsMapping: { param1: 'fetched-mappedParam1' }
+    }
+  },
+  en: {
+    page1: {
+      paths: ['fetched-en-path1', 'fetched-en-path10']
     }
   }
 };
 
-describe('RoutesConfigLoader', () => {
-  let loader: RoutesConfigLoader;
+describe('RoutingTranslationLoader', () => {
+  let loader: RoutingTranslationLoader;
   let http: HttpClient;
   let routingTranslationConfig: RoutingTranslationConfig;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        RoutesConfigLoader,
+        RoutingTranslationLoader,
         { provide: HttpClient, useValue: mockHttpClient },
         { provide: ServerConfig, useValue: mockServerConfig },
         {
@@ -62,7 +60,7 @@ describe('RoutesConfigLoader', () => {
       ]
     });
 
-    loader = TestBed.get(RoutesConfigLoader);
+    loader = TestBed.get(RoutingTranslationLoader);
     http = TestBed.get(HttpClient);
     routingTranslationConfig = TestBed.get(RoutingTranslationConfig);
   });
@@ -70,7 +68,7 @@ describe('RoutesConfigLoader', () => {
   describe('loadRoutesConfig', () => {
     describe(', when fetch is configured to true,', () => {
       beforeEach(() => {
-        routingTranslationConfig.routesConfig.fetch = true;
+        routingTranslationConfig.routingTranslation.fetch = true;
       });
 
       it('should fetch routes config from url', () => {
@@ -80,7 +78,9 @@ describe('RoutesConfigLoader', () => {
       });
 
       it('should place routes config under "routesConfig" property', async () => {
-        spyOn(http, 'get').and.returnValue(of(mockFetchedRoutesConfig));
+        spyOn(http, 'get').and.returnValue(
+          of(mockFetchedLanguagesTranslations)
+        );
         expect(loader.translations).toBeFalsy();
         await loader.load();
         expect(loader.translations).toBeTruthy();
@@ -88,7 +88,9 @@ describe('RoutesConfigLoader', () => {
 
       // tslint:disable-next-line:max-line-length
       it('should extend fetched routes config with static one and extend routes translations for languages with "default" translations', async () => {
-        spyOn(http, 'get').and.returnValue(of(mockFetchedRoutesConfig));
+        spyOn(http, 'get').and.returnValue(
+          of(mockFetchedLanguagesTranslations)
+        );
         await loader.load();
         expect(loader.translations).toEqual({
           translations: {
@@ -120,7 +122,7 @@ describe('RoutesConfigLoader', () => {
 
     describe(', when fetch is configured to false,', () => {
       beforeEach(() => {
-        routingTranslationConfig.routesConfig.fetch = false;
+        routingTranslationConfig.routingTranslation.fetch = false;
       });
 
       it('should NOT fetch routes config', () => {
@@ -136,7 +138,9 @@ describe('RoutesConfigLoader', () => {
       });
 
       it('should use static routes config and extend routes translations for languages with "default"', () => {
-        spyOn(http, 'get').and.returnValue(of(mockFetchedRoutesConfig));
+        spyOn(http, 'get').and.returnValue(
+          of(mockFetchedLanguagesTranslations)
+        );
         loader.load();
         expect(loader.translations).toEqual(
           jasmine.objectContaining({

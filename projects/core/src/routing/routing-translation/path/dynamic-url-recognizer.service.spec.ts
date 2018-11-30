@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { RoutesConfigLoader } from '../routes-config-loader';
+import { RoutingTranslationLoader } from '../routing-translation-loader';
 import { RoutesTranslations } from '../routes-config';
 import { DynamicUrlRecognizerService } from './dynamic-url-recognizer.service';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -10,7 +10,7 @@ const mockRoutesConfigLoader = {
 };
 
 describe('DynamicUrlRecognizerService', () => {
-  let loader: RoutesConfigLoader;
+  let loader: RoutingTranslationLoader;
   let service: DynamicUrlRecognizerService;
 
   beforeEach(() => {
@@ -20,13 +20,13 @@ describe('DynamicUrlRecognizerService', () => {
         DynamicUrlRecognizerService,
         UrlParser,
         {
-          provide: RoutesConfigLoader,
+          provide: RoutingTranslationLoader,
           useValue: mockRoutesConfigLoader
         }
       ]
     });
 
-    loader = TestBed.get(RoutesConfigLoader);
+    loader = TestBed.get(RoutingTranslationLoader);
     service = TestBed.get(DynamicUrlRecognizerService);
   });
 

@@ -9,7 +9,7 @@ import { retry } from 'rxjs/operators';
 const ENDPOINT_ROUTING_TRANSLATION = 'routing-translation';
 
 @Injectable()
-export class RoutesConfigLoader {
+export class RoutingTranslationLoader {
   private _languagesTranslations: RoutingLanguagesTranslations;
 
   get translations(): RoutingLanguagesTranslations {

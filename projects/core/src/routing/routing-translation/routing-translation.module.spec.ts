@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ConfigurableRoutesModule } from './routing-translation.module';
-import { RoutesConfigLoader } from './routes-config-loader';
+import { RoutingTranslationLoader } from './routing-translation-loader';
 import { APP_INITIALIZER } from '@angular/core';
 
 const mockRoutesConfigLoader = {
@@ -12,11 +12,11 @@ describe('CongifurableRoutesModule', () => {
     TestBed.configureTestingModule({
       imports: [ConfigurableRoutesModule],
       providers: [
-        { provide: RoutesConfigLoader, useValue: mockRoutesConfigLoader }
+        { provide: RoutingTranslationLoader, useValue: mockRoutesConfigLoader }
       ]
     });
 
-    const routesConfigLoader = TestBed.get(RoutesConfigLoader);
+    const routesConfigLoader = TestBed.get(RoutingTranslationLoader);
     const appInits = TestBed.get(APP_INITIALIZER);
     const [appInitiaizerInvokingLoader] = appInits.slice(-1);
 

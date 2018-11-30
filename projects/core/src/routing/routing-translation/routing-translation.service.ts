@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Routes, Router, Route } from '@angular/router';
 import { ServerConfig } from '../../config/server-config/server-config';
-import { RoutesConfigLoader } from './routes-config-loader';
+import { RoutingTranslationLoader } from './routing-translation-loader';
 import {
   RoutesTranslations,
   RouteTranslation,
@@ -15,7 +15,7 @@ export class ConfigurableRoutesService {
   constructor(
     private readonly config: ServerConfig,
     private readonly router: Router,
-    private readonly loader: RoutesConfigLoader
+    private readonly loader: RoutingTranslationLoader
   ) {}
 
   private readonly DEFAULT_LANGUAGE_CODE = 'default';
