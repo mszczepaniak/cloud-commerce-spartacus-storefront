@@ -1,23 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { RoutingTranslationLoader } from '../routing-translation-loader';
-import { RoutesTranslations } from '../routes-config';
-import { DynamicUrlRecognizerService } from './dynamic-url-recognizer.service';
+import { RoutesTranslations } from '../routes-translations';
+import { RouteRecognizerService } from './dynamic-url-recognizer.service';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UrlParser } from './url-parser.service';
+import { UrlParser } from '../route-recognizer/url-parser.service';
 
 const mockRoutesConfigLoader = {
   routesConfig: { translations: { default: {} } }
 };
 
-describe('DynamicUrlRecognizerService', () => {
+describe('RouteRecognizerService', () => {
   let loader: RoutingTranslationLoader;
-  let service: DynamicUrlRecognizerService;
+  let service: RouteRecognizerService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [
-        DynamicUrlRecognizerService,
+        RouteRecognizerService,
         UrlParser,
         {
           provide: RoutingTranslationLoader,
@@ -27,10 +27,10 @@ describe('DynamicUrlRecognizerService', () => {
     });
 
     loader = TestBed.get(RoutingTranslationLoader);
-    service = TestBed.get(DynamicUrlRecognizerService);
+    service = TestBed.get(RouteRecognizerService);
   });
 
-  describe('getNestedRoutes', () => {
+  describe('recognize', () => {
     function test_getNestedRoutes({
       url,
       defaultTranslations,
@@ -44,7 +44,7 @@ describe('DynamicUrlRecognizerService', () => {
       };
     }) {
       loader.translations.default = defaultTranslations;
-      expect(service.getNestedRoutes(url)).toEqual(expectedResult);
+      expect(service.recognize(url)).toEqual(expectedResult);
     }
 
     it('should return route name for given absolute url', () => {

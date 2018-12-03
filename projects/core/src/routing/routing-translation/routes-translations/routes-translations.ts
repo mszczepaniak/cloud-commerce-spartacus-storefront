@@ -1,9 +1,4 @@
-import { StorefrontRoutesTranslations } from './config/storefront-routes-translations';
-
-export interface RoutesConfig {
-  translations: RoutingLanguagesTranslations;
-  fetch: boolean;
-}
+import { StorefrontRoutesTranslations } from '../config/storefront-routes-translations';
 
 export interface RoutingLanguagesTranslations {
   default?: RoutesTranslations | StorefrontRoutesTranslations;

@@ -1,16 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { ServerConfig } from '../../config/server-config/server-config';
 import { RoutingTranslationLoader } from './routing-translation-loader';
-import { ConfigurableRoutesService } from './routing-translation.service';
+import { ConfigurableRoutesService } from './routes-translations.service';
 import { Router, Routes } from '@angular/router';
-import { RoutesConfig } from './routes-config';
 
-const mockRoutesConfigLoader: { routesConfig: RoutesConfig } = {
-  routesConfig: {
-    translations: {
-      default: {}
-    }
-  }
+const mockRoutesConfigLoader: RoutingLanguagesTranslations = {
+  default: {}
 };
 const mockServerConfig: ServerConfig = { production: false };
 class MockRouter {

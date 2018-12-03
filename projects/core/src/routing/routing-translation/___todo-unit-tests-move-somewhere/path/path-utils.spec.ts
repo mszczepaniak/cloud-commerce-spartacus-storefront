@@ -1,4 +1,4 @@
-import * as pathUtils from './path-utils';
+import * as pathUtils from '../route-recognizer/path-utils';
 
 describe('path utils', () => {
   describe('isParameter', () => {

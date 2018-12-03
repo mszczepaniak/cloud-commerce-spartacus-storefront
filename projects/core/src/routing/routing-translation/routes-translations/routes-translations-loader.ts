@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ServerConfig } from '../../config/server-config/server-config';
 import { Injectable } from '@angular/core';
-import { RoutingLanguagesTranslations } from './routes-config';
+import { RoutingLanguagesTranslations } from './routes-translations';
 import { deepMerge } from '../../config/utils/deep-merge';
 import { RoutingTranslationConfig } from './config/routing-translation-config';
 import { retry } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { retry } from 'rxjs/operators';
 const ENDPOINT_ROUTING_TRANSLATION = 'routing-translation';
 
 @Injectable()
-export class RoutingTranslationLoader {
+export class RoutesTranslationsLoader {
   private _languagesTranslations: RoutingLanguagesTranslations;
 
   get translations(): RoutingLanguagesTranslations {

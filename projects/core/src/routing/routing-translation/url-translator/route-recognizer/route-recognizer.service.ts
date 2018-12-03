@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { RoutingTranslationLoader } from '../routing-translation-loader';
 import { UrlParser } from './url-parser.service';
-import { RoutesTranslations } from '../routes-config';
+import { RoutesTranslations } from '../routes-translations/routes-translations';
 import { removeLeadingSlash, isParam, getParamName } from './path-utils';
 
 @Injectable()
-export class DynamicUrlRecognizerService {
+export class RouteRecognizerService {
   constructor(
     private routesConfigLoader: RoutingTranslationLoader,
     private urlParser: UrlParser
   ) {}
 
-  getNestedRoutes(
+  recognize(
     url: string
   ): {
     nestedRoutesNames: string[];
@@ -20,7 +20,7 @@ export class DynamicUrlRecognizerService {
     url = removeLeadingSlash(url); // url will be compared with paths translations which do not have leading slash
     const routesTranslations = this.defaultRoutesTranslations;
     const urlSegments = this.urlParser.getPrimarySegments(url);
-    const recognizedNestedRoutes = this.getNestedRoutesRecursive(
+    const recognizedNestedRoutes = this.recognizeNestedRoutesRecursive(
       urlSegments,
       routesTranslations,
       []
@@ -38,7 +38,7 @@ export class DynamicUrlRecognizerService {
     return { nestedRoutesNames: null, nestedRoutesParams: null };
   }
 
-  private getNestedRoutesRecursive(
+  private recognizeNestedRoutesRecursive(
     remainingUrlSegments: string[],
     routesTranslations: RoutesTranslations,
     accResult: { routeName: string; params: object }[]
@@ -65,7 +65,7 @@ export class DynamicUrlRecognizerService {
         );
         // if some path is matching, try to match remaining segments
         if (params) {
-          const result = this.getNestedRoutesRecursive(
+          const result = this.recognizeNestedRoutesRecursive(
             remainingUrlSegments.slice(pathSegments.length),
             routeTranslation.children,
             accResult.concat({ routeName, params })

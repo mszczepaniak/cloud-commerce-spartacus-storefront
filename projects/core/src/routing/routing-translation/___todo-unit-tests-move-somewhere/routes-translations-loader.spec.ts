@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
-import { ServerConfig } from '../../config';
-import { RoutingTranslationConfig } from './config/routing-translation-config';
-import { RoutingTranslationLoader } from './routing-translation-loader';
+import { ServerConfig } from '../../../config';
+import { RoutingTranslationConfig } from '../config/routing-translation-config';
+import { RoutesTranslationsLoader } from './routes-translations-loader';
 import { BehaviorSubject, of } from 'rxjs';
-import { RoutingLanguagesTranslations } from './routes-config';
+import { RoutingLanguagesTranslations } from './routes-translations';
 
 const mockHttpClient = {
   get: () => new BehaviorSubject(null)
@@ -43,14 +43,14 @@ const mockFetchedLanguagesTranslations: RoutingLanguagesTranslations = {
 };
 
 describe('RoutingTranslationLoader', () => {
-  let loader: RoutingTranslationLoader;
+  let loader: RoutesTranslationsLoader;
   let http: HttpClient;
   let routingTranslationConfig: RoutingTranslationConfig;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        RoutingTranslationLoader,
+        RoutesTranslationsLoader,
         { provide: HttpClient, useValue: mockHttpClient },
         { provide: ServerConfig, useValue: mockServerConfig },
         {
@@ -60,7 +60,7 @@ describe('RoutingTranslationLoader', () => {
       ]
     });
 
-    loader = TestBed.get(RoutingTranslationLoader);
+    loader = TestBed.get(RoutesTranslationsLoader);
     http = TestBed.get(HttpClient);
     routingTranslationConfig = TestBed.get(RoutingTranslationConfig);
   });

@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { PathPipeService } from './path-pipe.service';
-import { ConfigurableRoutesService } from '../routing-translation.service';
+import { ConfigurableRoutesService } from '../routes-translations.service';
 import { ServerConfig } from '../../../config/server-config/server-config';
-import { RouteTranslation } from '../routes-config';
-import { UrlParser } from './url-parser.service';
+import { RouteTranslation } from '../routes-translations';
+import { UrlParser } from '../route-recognizer/url-parser.service';
 import { RouterTestingModule } from '@angular/router/testing';
 
 const mockConfigurableRoutesService = {

@@ -1,113 +1,24 @@
 import { Injectable } from '@angular/core';
 import { Routes, Router, Route } from '@angular/router';
-import { ServerConfig } from '../../config/server-config/server-config';
+import { ServerConfig } from '../../../config/server-config/server-config';
 import { RoutingTranslationLoader } from './routing-translation-loader';
 import {
   RoutesTranslations,
   RouteTranslation,
   RoutingLanguagesTranslations
-} from './routes-config';
+} from '../routes-translations/routes-translations';
+import { RoutesTranslationsService } from '../routes-translations/routes-translations.service';
 
 type ConfigurableRouteKey = 'cxPath' | 'cxRedirectTo';
 
 @Injectable()
-export class ConfigurableRoutesService {
+export class RouterConfigTranslator {
   constructor(
     private readonly config: ServerConfig,
-    private readonly router: Router,
-    private readonly loader: RoutingTranslationLoader
+    private readonly routesTranslationsService: RoutesTranslationsService
   ) {}
 
-  private readonly DEFAULT_LANGUAGE_CODE = 'default';
-
-  private _translations: RoutingLanguagesTranslations;
-  private currentLanguageCode: string = this.DEFAULT_LANGUAGE_CODE;
-
-  private get currentRoutesTranslations(): RoutesTranslations {
-    return this._translations[this.currentLanguageCode] as RoutesTranslations;
-  }
-
-  init() {
-    this._translations = this.loader.translations;
-  }
-
-  changeLanguage(languageCode: string) {
-    if (this._translations.translations[languageCode] === undefined) {
-      this.warn(
-        `There are no translations in routes config for language code '${languageCode}'.`,
-        `The default routes translations will be used instead: `,
-        this._translations.default
-      );
-      this.currentLanguageCode = this.DEFAULT_LANGUAGE_CODE;
-    } else {
-      this.currentLanguageCode = languageCode;
-    }
-
-    this.router.resetConfig(
-      this.translateRoutes(this.router.config, this.currentRoutesTranslations)
-    );
-  }
-
-  getNestedRoutesTranslations(
-    nestedRouteNames: string[],
-    routesTranslations: RoutesTranslations = this.currentRoutesTranslations
-  ): RouteTranslation[] {
-    return this.getNestedRoutesTranslationsRecursive(
-      nestedRouteNames,
-      routesTranslations,
-      []
-    );
-  }
-
-  private getNestedRoutesTranslationsRecursive(
-    nestedRoutesNames: string[],
-    routesTranslations: RoutesTranslations,
-    accResult: RouteTranslation[]
-  ): RouteTranslation[] {
-    if (!nestedRoutesNames.length) {
-      return accResult;
-    }
-    const [routeName, ...remainingRouteNames] = nestedRoutesNames;
-    const translation = this.getRouteTranslation(routeName, routesTranslations);
-    if (!translation) {
-      return null;
-    }
-
-    if (remainingRouteNames.length) {
-      const childrenTranslations = this.getChildrenRoutesTranslations(
-        routeName,
-        routesTranslations
-      );
-      if (!childrenTranslations) {
-        this.warn(
-          `No children routes translations were configured for page '${routeName}' in language '${
-            this.currentLanguageCode
-          }'!`
-        );
-        return null;
-      }
-
-      return this.getNestedRoutesTranslationsRecursive(
-        remainingRouteNames,
-        childrenTranslations,
-        accResult.concat(translation)
-      );
-    }
-    return accResult.concat(translation);
-  }
-
-  private getChildrenRoutesTranslations(
-    routeName: string,
-    routesTranslations: RoutesTranslations
-  ): RoutesTranslations {
-    const routeTranslation = this.getRouteTranslation(
-      routeName,
-      routesTranslations
-    );
-    return routeTranslation && routeTranslation.children;
-  }
-
-  private translateRoutes(
+  translateRouterConfig(
     routes: Routes,
     routesTranslations: RoutesTranslations
   ): Routes {
@@ -137,7 +48,7 @@ export class ConfigurableRoutesService {
   ): Routes {
     if (this.isConfigurable(route, 'cxPath')) {
       const routeName = this.getConfigurable(route, 'cxPath');
-      const childrenTranslations = this.getChildrenRoutesTranslations(
+      const childrenTranslations = this.routesTranslationsService.getChildrenRoutesTranslations(
         routeName,
         routesTranslations
       );
@@ -156,7 +67,7 @@ export class ConfigurableRoutesService {
       if (childrenTranslations === null) {
         return [];
       }
-      return this.translateRoutes(route.children, childrenTranslations);
+      return this.translateRouterConfig(route.children, childrenTranslations);
     }
     return null;
   }
@@ -185,6 +96,7 @@ export class ConfigurableRoutesService {
     return [route]; // if nothing is configurable, just pass the original route
   }
 
+  // spike todo improve names of isConfigurable and getConfigurable
   private isConfigurable(route: Route, key: ConfigurableRouteKey): boolean {
     return !!this.getConfigurable(route, key);
   }
@@ -220,28 +132,16 @@ export class ConfigurableRoutesService {
       : [];
   }
 
-  private getRouteTranslation(
-    routeName: string,
-    routesTranslations: RoutesTranslations
-  ): RouteTranslation {
-    const result = routesTranslations && routesTranslations[routeName];
-    if (!routesTranslations || result === undefined) {
-      this.warn(
-        `No route translation was configured for page '${routeName}' in language '${
-          this.currentLanguageCode
-        }'!`
-      );
-    }
-    return result;
-  }
-
   private getTranslatedPaths(
     route: Route,
     key: ConfigurableRouteKey,
     routesTranslations: RoutesTranslations
   ): string[] {
     const routeName = this.getConfigurable(route, key);
-    const translation = this.getRouteTranslation(routeName, routesTranslations);
+    const translation = this.routesTranslationsService.getRouteTranslation(
+      routeName,
+      routesTranslations
+    );
     if (translation === undefined) {
       this.warn(
         `Could not translate key '${key}' of route '${routeName}'`,

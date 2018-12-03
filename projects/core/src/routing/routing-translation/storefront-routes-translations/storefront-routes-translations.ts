@@ -4,7 +4,7 @@
  * Translations for custom pages are covered by RoutesTranslations interface
  */
 
-import { ParamsMapping } from '../routes-config';
+import { ParamsMapping } from '../routes-translations/routes-translations';
 
 interface StorefrontRouteTranslation {
   paths?: string[];

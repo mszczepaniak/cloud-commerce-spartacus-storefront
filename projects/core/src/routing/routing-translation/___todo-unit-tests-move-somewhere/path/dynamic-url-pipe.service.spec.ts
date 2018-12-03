@@ -1,20 +1,20 @@
 import { TestBed } from '@angular/core/testing';
 import { DynamicUrlPipeService } from './dynamic-url-pipe.service';
 import { PathPipeService } from './path-pipe.service';
-import { DynamicUrlRecognizerService } from './dynamic-url-recognizer.service';
+import { RouteRecognizerService } from './dynamic-url-recognizer.service';
 
 const mockPathService = {
   transform: () => {}
 };
 
 const mockDynamicUrlRecognizerService = {
-  getNestedRoutes: () => {}
+  recognize: () => {}
 };
 
 describe('DynamicUrlPipeService', () => {
   let pathService: PathPipeService;
   let service: DynamicUrlPipeService;
-  let dynamicUrlRecognizer: DynamicUrlRecognizerService;
+  let dynamicUrlRecognizer: RouteRecognizerService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,14 +25,14 @@ describe('DynamicUrlPipeService', () => {
           useValue: mockPathService
         },
         {
-          provide: DynamicUrlRecognizerService,
+          provide: RouteRecognizerService,
           useValue: mockDynamicUrlRecognizerService
         }
       ]
     });
 
     pathService = TestBed.get(PathPipeService);
-    dynamicUrlRecognizer = TestBed.get(DynamicUrlRecognizerService);
+    dynamicUrlRecognizer = TestBed.get(RouteRecognizerService);
     service = TestBed.get(DynamicUrlPipeService);
   });
 
@@ -41,7 +41,7 @@ describe('DynamicUrlPipeService', () => {
       const inputUrl = 'test-path/value1/value2';
       const expectedResult = ['expected-result'];
       spyOn(pathService, 'transform').and.returnValue(expectedResult);
-      spyOn(dynamicUrlRecognizer, 'getNestedRoutes').and.returnValue({
+      spyOn(dynamicUrlRecognizer, 'recognize').and.returnValue({
         nestedRoutesNames: 'testRouteName',
         nestedRoutesParams: { param1: 'value1', param2: 'value2' }
       });
@@ -55,21 +55,19 @@ describe('DynamicUrlPipeService', () => {
       expect(result).toBe(expectedResult);
     });
 
-    it('should get matching route name and params from DynamicUrlRecognizerService', () => {
+    it('should get matching route name and params from RouteRecognizerService', () => {
       const inputUrl = 'test-path/value1/value2';
-      spyOn(dynamicUrlRecognizer, 'getNestedRoutes').and.returnValue({
+      spyOn(dynamicUrlRecognizer, 'recognize').and.returnValue({
         nestedRoutesNames: null,
         nestedRoutesParams: null
       });
       service.transform(inputUrl);
-      expect(dynamicUrlRecognizer.getNestedRoutes).toHaveBeenCalledWith(
-        inputUrl
-      );
+      expect(dynamicUrlRecognizer.recognize).toHaveBeenCalledWith(inputUrl);
     });
 
     it('should return original url there is no matching route for this url', () => {
       const inputUrl = 'unknown-path';
-      spyOn(dynamicUrlRecognizer, 'getNestedRoutes').and.returnValue({
+      spyOn(dynamicUrlRecognizer, 'recognize').and.returnValue({
         nestedRoutesNames: null,
         nestedRoutesParams: null
       });

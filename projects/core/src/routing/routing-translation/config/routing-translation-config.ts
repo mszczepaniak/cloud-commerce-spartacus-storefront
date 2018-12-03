@@ -1,4 +1,4 @@
-import { RoutingLanguagesTranslations } from '../routes-config';
+import { RoutingLanguagesTranslations } from '../routes-translations/routes-translations';
 
 export abstract class RoutingTranslationConfig {
   routingTranslation?: {
